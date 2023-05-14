@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 # AndroidAPP
+=======
+# AndroidAPP
+
+>>>>>>> julian
