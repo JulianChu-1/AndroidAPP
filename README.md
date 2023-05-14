@@ -1,6 +1,1 @@
-<<<<<<< HEAD
-# AndroidAPP
-=======
-# AndroidAPP
-
->>>>>>> julian
+# Android APP Development
