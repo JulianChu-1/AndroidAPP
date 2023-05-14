@@ -7,35 +7,37 @@
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_layout"/>
-
+        android:id="@+id/recycler_view"
+        android:layout_above="@id/bottom_layout"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/welcome_text"
         android:layout_centerInParent="true"
-        android:text="Welcome to ChatGPT"
+        android:text="Welcome to Easy ChatGPT\nTry it out now"
         android:gravity="center"
-        android:textSize="28dp"/>
+        android:textSize="28dp"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:padding="8dp"
         android:layout_alignParentBottom="true"
+        android:padding="8dp"
         android:id="@+id/bottom_layout">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:id="@+id/message_edit_text"
-            android:layout_toLeftOf="@+id/send_btn"
+            android:layout_centerInParent="true"
+            android:hint="Write here "
+            android:padding="16dp"
+            android:layout_toLeftOf="@id/send_btn"
             android:background="@drawable/rounded_corner"
-            android:hint="Write here"
-            android:padding="16dp"/>
+            />
         <ImageButton
             tools:ignore="SpeakableTextPresentCheck"
             android:layout_width="48dp"
@@ -46,7 +48,9 @@
             android:layout_marginStart="10dp"
             android:padding="8dp"
             android:src="@drawable/baseline_send_24"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
-    </RelativeLayout>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            />
 
+
+    </RelativeLayout>
 </RelativeLayout>
