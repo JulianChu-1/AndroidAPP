@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             String question = messageEditText.getText().toString().trim();
             addToChat(question,Message.SENT_BY_ME);
             messageEditText.setText("");
-            callAPI(question,"dsadasd");
+            callAPI(question,SettingActivity.m_value);
             welcomeTextView.setVisibility(View.GONE);
         });
 

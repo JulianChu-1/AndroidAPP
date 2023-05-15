@@ -32,6 +32,7 @@ public class SettingActivity extends AppCompatActivity {
     private List<String> dataList = new ArrayList<>();
     private PopupWindow popupWindow;
     private MyAdapter adapter_1;
+    public static String m_value;
 
 
     @Override
@@ -52,6 +53,7 @@ public class SettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String value = editKey.getText().toString();
                 saveDataToDatabase(value);
+                m_value = value;
                 loadDataFromDatabase();
                 recyclerView.setAdapter(adapter_1);
                 recyclerView.getAdapter().notifyDataSetChanged();
