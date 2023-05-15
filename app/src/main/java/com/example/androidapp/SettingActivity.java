@@ -104,18 +104,27 @@ public class SettingActivity extends AppCompatActivity {
     }
     private void iniEditText(EditText e) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {"API_KEY"};
-        Cursor cursor = db.query("API_TABLE", projection, null, null, null, null, "ROWID DESC", "1");
-        cursor.moveToLast();
-        int columnIndex = cursor.getColumnIndex("API_KEY");
-        if (columnIndex != -1) {
-            String value = cursor.getString(columnIndex);
-            e.setText(value);
+        String query = "SELECT COUNT(*) FROM API_TABLE";
+        Cursor cursor_1 = db.rawQuery(query, null);
+        cursor_1.moveToFirst();
+        int count = cursor_1.getInt(0);
+        cursor_1.close();
+        if (count > 0) {
+            String[] projection = {"API_KEY"};
+            Cursor cursor = db.query("API_TABLE", projection, null, null, null, null, "ROWID DESC", "1");
+            cursor.moveToLast();
+            int columnIndex = cursor.getColumnIndex("API_KEY");
+            if (columnIndex != -1) {
+                String value = cursor.getString(columnIndex);
+                e.setText(value);
+            } else {
+                Log.e("MyApp", "Column 'API_KEY' not found the last key");
+            }
+            cursor.close();
         } else {
-            e.setText(' ');
-            Log.e("MyApp", "Column 'API_KEY' not found the last key");
+            e.setText(" ");
         }
-        cursor.close();
+
         e.setFocusable(true);
         e.setFocusableInTouchMode(true);
         e.setOnClickListener(new View.OnClickListener() {
