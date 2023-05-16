@@ -75,8 +75,7 @@ public class SettingActivity extends AppCompatActivity {
         builder.setMessage("SecretKey输入成功");
         builder.setPositiveButton("确定", (dialog, which) -> {
             Toast.makeText(SettingActivity.this, "开始使用MobileChat吧！",Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(SettingActivity.this,MainActivity.class);
-            startActivity(intent);
+            finish();
         });
         // builder.setNeutralButton("取消", null);
         builder.show();

@@ -17,7 +17,6 @@
         android:layout_marginBottom="2.5dp"
         android:layout_marginTop="2.5dp"
         >
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,6 +24,5 @@
             android:textColor="@color/white"
             android:textSize="18sp"
             />
-
     </LinearLayout>
 </FrameLayout>

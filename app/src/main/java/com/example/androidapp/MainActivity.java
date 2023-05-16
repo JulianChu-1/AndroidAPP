@@ -41,7 +41,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-//为m_value设置初值
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     TextView welcomeTextView;
@@ -118,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.app_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
@@ -130,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.history:
                 intent = new Intent(MainActivity.this,HistoryActivity.class);
                 startActivity(intent);
+                return true;
+            case android.R.id.home:
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -194,8 +197,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-
     }
+
     private void initApiKey() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String query = "SELECT COUNT(*) FROM API_TABLE";
