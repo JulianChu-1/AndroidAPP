@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,7 +27,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 messageEditText.setText("");
                 callAPI(question,SettingActivity.m_value);
                 welcomeTextView.setVisibility(View.GONE);
+                SaveToTableDialogue(question,"ME");
             }
             else {
                 AlertShow();
@@ -89,10 +94,21 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setTitle("提示");
         builder.setMessage("请先前往设置输入SecretKey哦");
-        builder.setPositiveButton("确定", (dialog, which) -> {
-            //Toast.makeText(MainActivity.this, "开始使用MobileChat吧！",Toast.LENGTH_SHORT).show();
-        });
+        builder.setPositiveButton("确定", (dialog, which) -> {});
         builder.show();
+    }
+
+    private void SaveToTableDialogue(String value, String type){
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("Message", value);
+        values.put("_TYPE",type);
+        values.put("_DATETIME",formatter.format(date));
+        values.put("API_KEY",SettingActivity.m_value);
+        db.insert("Dialogue_TABLE", null, values);
+        db.close();
     }
 
     @Override
@@ -167,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                         JSONArray jsonArray = jsonObject.getJSONArray("choices");
                         String result = jsonArray.getJSONObject(0).getString("text");
                         addResponse(result.trim());
-                        // myDatabaseHelper.addDialogue(result.trim(),question);
+                        SaveToTableDialogue(result.trim(),"BOT");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

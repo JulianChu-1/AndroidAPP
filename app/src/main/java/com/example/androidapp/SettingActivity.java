@@ -112,6 +112,7 @@ public class SettingActivity extends AppCompatActivity {
         cursor.close();
     }
 
+    // 存入数据到数据库
     private void saveDataToDatabase(String value) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -119,10 +120,7 @@ public class SettingActivity extends AppCompatActivity {
         db.insertWithOnConflict("API_TABLE", null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
-
-    public void onItemClick(String item) {
-        editKey.setText(item);
-    }
+    
     private void iniEditText(EditText e) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String query = "SELECT COUNT(*) FROM API_TABLE";
