@@ -54,7 +54,7 @@ public class HistoryActivity extends AppCompatActivity {
                 selectionArgs,
                 null,
                 null,
-                "_TYPE, _DATETIME ASC"
+                "_DATETIME ASC"
         );
 
         dataList.clear();

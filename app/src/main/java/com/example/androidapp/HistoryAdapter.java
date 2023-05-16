@@ -43,7 +43,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            messageTextView = itemView.findViewById(R.id.messageTextView);
+            messageTextView = itemView.findViewById(R.id.messageTextView_text);
         }
     }
 }
