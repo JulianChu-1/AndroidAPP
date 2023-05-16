@@ -41,6 +41,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+//为m_value设置初值
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     TextView welcomeTextView;
@@ -59,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         messageList = new ArrayList<>();
-
         dbHelper = new MyDatabaseHelper(this);
 
+        initApiKey();
         recyclerView = findViewById(R.id.recycler_view);
         welcomeTextView = findViewById(R.id.welcome_text);
         messageEditText = findViewById(R.id.message_edit_text);
@@ -191,7 +192,33 @@ public class MainActivity extends AppCompatActivity {
                     addResponse("Failed to load response due to "+response.body().toString());
                 }
             }
+
         });
+
+    }
+    private void initApiKey() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM API_TABLE";
+        Cursor cursor_1 = db.rawQuery(query, null);
+        cursor_1.moveToFirst();
+        int count = cursor_1.getInt(0);
+        cursor_1.close();
+        if (count > 0) {
+            String[] projection = {"API_KEY"};
+            Cursor cursor = db.query("API_TABLE", projection, null, null, null, null, "ROWID DESC", "1");
+            cursor.moveToLast();
+            int columnIndex = cursor.getColumnIndex("API_KEY");
+            if (columnIndex != -1) {
+                String api_key = cursor.getString(columnIndex);
+                SettingActivity.m_value = api_key;
+                SettingActivity.m_signal = true;
+            } else {
+                Log.e("MyApp", "Column 'API_KEY' not found the last key");
+            }
+            cursor.close();
+        } else {
+            SettingActivity.m_value="";
+        }
     }
 }
 

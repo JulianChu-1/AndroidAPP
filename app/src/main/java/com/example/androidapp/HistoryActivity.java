@@ -1,6 +1,7 @@
 package com.example.androidapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.Cursor;
@@ -18,33 +19,54 @@ public class HistoryActivity extends AppCompatActivity {
 
     private AutoCompleteTextView autoCompleteTextView;
     private List<String> dataList = new ArrayList<>();
-    private ArrayAdapter adapter;
 
-
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         dbHelper = new MyDatabaseHelper(this);
-        autoCompleteTextView = findViewById(R.id.autoCompletetextview);
-        String[] context = new String[]{"China","Britain","Russia","Canada","U.S.A","Chile","Germany"};
-        adapter = new ArrayAdapter<String>(this, R.layout.item_layout,context);
-        autoCompleteTextView.setAdapter(adapter);
+
+        recyclerView = findViewById(R.id.recyclerView);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new HistoryAdapter(dataList);
+        recyclerView.setAdapter(adapter);
+
+        loadDataFromDatabase();
+
+
     }
+
 
     private void loadDataFromDatabase() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {"API_KEY"};
-        Cursor cursor = db.query("API_TABLE", projection, null, null, null, null, "ROWID DESC", "5");
+        String[] projection = {"Message", "_TYPE", "_DATETIME"};
+        String selection = "API_KEY = ?";
+        String[] selectionArgs = {SettingActivity.m_value}; // Replace currentAPIKey with the actual API_KEY value
+
+        Cursor cursor = db.query(
+                "Dialogue_TABLE",
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                "_TYPE, _DATETIME ASC"
+        );
 
         dataList.clear();
         while (cursor.moveToNext()) {
-            int columnIndex = cursor.getColumnIndex("API_KEY");
-            if (columnIndex != -1) {
-                String value = cursor.getString(columnIndex);
-                dataList.add(value);
+            int messageIndex = cursor.getColumnIndex("Message");
+            int typeIndex = cursor.getColumnIndex("_TYPE");
+            if (messageIndex != -1 && typeIndex != -1) {
+                String message = cursor.getString(messageIndex);
+                String type = cursor.getString(typeIndex);
+                dataList.add(type + ": " + message);
             } else {
-                Log.e("MyApp", "Column 'API_KEY' not found in result set");
+                Log.e("MyApp", "Columns 'Message' or '_TYPE' not found in result set");
             }
         }
         cursor.close();

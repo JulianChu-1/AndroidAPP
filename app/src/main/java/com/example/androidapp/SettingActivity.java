@@ -52,7 +52,7 @@ public class SettingActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
         loadDataFromDatabase();
         initRecyclerView();
-        iniEditText(editKey);
+        initEditText(editKey);
 
         Button btnSubmit = findViewById(R.id.btn_submit);
         btnSubmit.setOnClickListener(v -> {
@@ -121,7 +121,7 @@ public class SettingActivity extends AppCompatActivity {
         db.close();
     }
     
-    private void iniEditText(EditText e) {
+    private void initEditText(EditText e) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String query = "SELECT COUNT(*) FROM API_TABLE";
         Cursor cursor_1 = db.rawQuery(query, null);
@@ -141,7 +141,7 @@ public class SettingActivity extends AppCompatActivity {
             }
             cursor.close();
         } else {
-            e.setText(" ");
+            e.setText("");
         }
 
         e.setFocusable(true);
