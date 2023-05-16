@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         messageList = new ArrayList<>();
 
         dbHelper = new MyDatabaseHelper(this);
-        loadDataFromDatabase();
 
         recyclerView = findViewById(R.id.recycler_view);
         welcomeTextView = findViewById(R.id.welcome_text);
@@ -104,14 +103,16 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.setting:
-                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                intent = new Intent(MainActivity.this,SettingActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.history:
-
+                intent = new Intent(MainActivity.this,HistoryActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -119,13 +120,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void addToChat(String message,String sentBy){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                messageList.add(new Message(message,sentBy));
-                messageAdapter.notifyDataSetChanged();
-                recyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
-            }
+        runOnUiThread(() -> {
+            messageList.add(new Message(message,sentBy));
+            messageAdapter.notifyDataSetChanged();
+            recyclerView.smoothScrollToPosition(messageAdapter.getItemCount());
         });
     }
 
@@ -178,26 +176,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void loadDataFromDatabase() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {"API_KEY"};
-        Cursor cursor = db.query("API_TABLE", projection, null, null, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            int columnIndex = cursor.getColumnIndex("API_KEY");
-            if (columnIndex != -1) {
-                String value = cursor.getString(columnIndex);
-                // TODO: 将获取到的数据填充到表单中的EditText控件中
-            } else {
-                Log.e("MyApp", "Column 'key1' not found in result set");
-            }
-        } else {
-            Log.e("MyApp", "Cursor is empty");
-        }
-
-        cursor.close();
     }
 }
 
