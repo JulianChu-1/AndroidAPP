@@ -1,6 +1,7 @@
 package com.example.androidapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     List<Message> messageList;
     MessageAdapter messageAdapter;
     MyDatabaseHelper dbHelper;
+    private AlertDialog.Builder builder;
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client = new OkHttpClient();
@@ -69,14 +72,30 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(llm);
 
         sendButton.setOnClickListener((v)->{
-            String question = messageEditText.getText().toString().trim();
-            addToChat(question,Message.SENT_BY_ME);
-            messageEditText.setText("");
-            callAPI(question,SettingActivity.m_value);
-            welcomeTextView.setVisibility(View.GONE);
+            if(SettingActivity.m_signal){
+                String question = messageEditText.getText().toString().trim();
+                addToChat(question,Message.SENT_BY_ME);
+                messageEditText.setText("");
+                callAPI(question,SettingActivity.m_value);
+                welcomeTextView.setVisibility(View.GONE);
+            }
+            else {
+                AlertShow();
+            }
         });
-
     }
+
+    private void AlertShow(){
+        builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setTitle("提示");
+        builder.setMessage("请先前往设置输入SecretKey哦");
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            //Toast.makeText(MainActivity.this, "开始使用MobileChat吧！",Toast.LENGTH_SHORT).show();
+        });
+        builder.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

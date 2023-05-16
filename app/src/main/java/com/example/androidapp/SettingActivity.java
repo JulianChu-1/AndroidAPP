@@ -1,6 +1,8 @@
 package com.example.androidapp;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -16,6 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListPopupWindow;
 import android.widget.PopupWindow;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +38,8 @@ public class SettingActivity extends AppCompatActivity {
     private PopupWindow popupWindow;
     private MyAdapter adapter_1;
     public static String m_value;
+    public static boolean m_signal = false;
+    private AlertDialog.Builder builder;
 
 
     @Override
@@ -48,18 +55,31 @@ public class SettingActivity extends AppCompatActivity {
         iniEditText(editKey);
 
         Button btnSubmit = findViewById(R.id.btn_submit);
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String value = editKey.getText().toString();
-                saveDataToDatabase(value);
-                m_value = value;
-                loadDataFromDatabase();
-                recyclerView.setAdapter(adapter_1);
-                recyclerView.getAdapter().notifyDataSetChanged();
-                editKey.setText("");
-            }
+        btnSubmit.setOnClickListener(v -> {
+            String value = editKey.getText().toString();
+            saveDataToDatabase(value);
+            m_value = value;
+            m_signal = true;
+            loadDataFromDatabase();
+            recyclerView.setAdapter(adapter_1);
+            recyclerView.getAdapter().notifyDataSetChanged();
+            editKey.setText("");
+            AlertShow();//提示框
         });
+    }
+
+    private void AlertShow(){
+        builder = new AlertDialog.Builder(SettingActivity.this);
+
+        builder.setTitle("提示");
+        builder.setMessage("SecretKey输入成功");
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            Toast.makeText(SettingActivity.this, "开始使用MobileChat吧！",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(SettingActivity.this,MainActivity.class);
+            startActivity(intent);
+        });
+        // builder.setNeutralButton("取消", null);
+        builder.show();
     }
 
     private void initRecyclerView() {
@@ -89,7 +109,6 @@ public class SettingActivity extends AppCompatActivity {
                 Log.e("MyApp", "Column 'API_KEY' not found in result set");
             }
         }
-
         cursor.close();
     }
 
@@ -129,12 +148,7 @@ public class SettingActivity extends AppCompatActivity {
 
         e.setFocusable(true);
         e.setFocusableInTouchMode(true);
-        e.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopupWindow();
-            }
-        });
+        e.setOnClickListener(v -> showPopupWindow());
     }
     private void showPopupWindow() {
         if (popupWindow == null) {
