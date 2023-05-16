@@ -21,8 +21,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        int layoutRes;
+        switch (viewType) {
+            case 0:
+                layoutRes = R.layout.history_item_layout_right;
+                break;
+            default:
+                layoutRes = R.layout.history_item_layout_left;
+                break;
+        }
         // Inflate the item layout
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
         return new ViewHolder(view);
     }
 
@@ -36,6 +45,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public int getItemCount() {
         return dataList.size();
+    }
+    public int getItemViewType(int position) {
+        // 根据数据项的内容判断视图类型
+        String item = dataList.get(position);
+        if (item.contains("ME")) {
+            return 0; // 视图类型 A
+        } else {
+            return 1; // 视图类型 B
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
