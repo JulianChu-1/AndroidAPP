@@ -3,6 +3,7 @@ package com.example.androidapp;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -173,6 +174,22 @@ public class SettingActivity extends AppCompatActivity {
         if (popupWindow != null && popupWindow.isShowing()) {
             popupWindow.dismiss();
         }
+    }
+
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong("last_close_time", System.currentTimeMillis());
+        editor.apply();
+        Intent serviceIntent = new Intent(this, MyService.class);
+        startService(serviceIntent);
+    }
+
+    protected void onResume(){
+        Intent serviceIntent = new Intent(this, MyService.class);
+        stopService(serviceIntent);
+        super.onResume();
     }
 
 }

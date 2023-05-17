@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -223,6 +224,22 @@ public class MainActivity extends AppCompatActivity {
         } else {
             SettingActivity.m_value="";
         }
+    }
+
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences prefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong("last_close_time", System.currentTimeMillis());
+        editor.apply();
+        Intent serviceIntent = new Intent(this, MyService.class);
+        startService(serviceIntent);
+    }
+
+    protected void onResume(){
+        Intent serviceIntent = new Intent(this, MyService.class);
+        stopService(serviceIntent);
+        super.onResume();
     }
 }
 
