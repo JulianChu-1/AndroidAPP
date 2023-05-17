@@ -17,7 +17,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         String SQL_CREATE_API_TABLE = "CREATE TABLE API_TABLE (API_KEY TEXT PRIMARY KEY)";
         db.execSQL(SQL_CREATE_API_TABLE);
         String SQL_CREATE_Dialogue_TABLE = "CREATE TABLE Dialogue_TABLE (_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "Message TEXT, _TYPE TEXT,_DATETIME TEXT, API_KEY TEXT)";
+                "Message TEXT, _TYPE TEXT,_DATETIME TEXT, API_KEY TEXT, BOT_NAME TEXT)";
         db.execSQL(SQL_CREATE_Dialogue_TABLE);
     }
 

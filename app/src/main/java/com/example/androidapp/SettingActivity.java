@@ -31,7 +31,7 @@ import java.util.List;
 
 public class SettingActivity extends AppCompatActivity {
 
-    private EditText editKey;
+    private EditText editKey, editKey2;
     private MyDatabaseHelper dbHelper;
     private RecyclerView recyclerView;
     private List<String> dataList = new ArrayList<>();
@@ -39,6 +39,7 @@ public class SettingActivity extends AppCompatActivity {
     private MyAdapter adapter_1;
     public static String m_value;
     public static boolean m_signal = false;
+    public static String m_bot_name;
     private AlertDialog.Builder builder;
 
 
@@ -48,6 +49,7 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
 
         editKey = findViewById(R.id.edit_key);
+        editKey2 = findViewById(R.id.edit_bot_name);
         dbHelper = new MyDatabaseHelper(this);
         recyclerView = findViewById(R.id.recycler_view);
         loadDataFromDatabase();
@@ -57,13 +59,19 @@ public class SettingActivity extends AppCompatActivity {
         Button btnSubmit = findViewById(R.id.btn_submit);
         btnSubmit.setOnClickListener(v -> {
             String value = editKey.getText().toString();
+            String bot_name = editKey2.getText().toString();
+
             saveDataToDatabase(value);
             m_value = value;
             m_signal = true;
+            m_bot_name = bot_name;
+
             loadDataFromDatabase();
             recyclerView.setAdapter(adapter_1);
             recyclerView.getAdapter().notifyDataSetChanged();
             editKey.setText("");
+            editKey2.setText("");
+
             AlertShow();//提示框
         });
     }
@@ -72,9 +80,9 @@ public class SettingActivity extends AppCompatActivity {
         builder = new AlertDialog.Builder(SettingActivity.this);
 
         builder.setTitle("提示");
-        builder.setMessage("SecretKey输入成功");
+        builder.setMessage(m_bot_name + "创建成功！");
         builder.setPositiveButton("确定", (dialog, which) -> {
-            Toast.makeText(SettingActivity.this, "开始使用MobileChat吧！",Toast.LENGTH_SHORT).show();
+            Toast.makeText(SettingActivity.this, "开始和" + m_bot_name +"聊天吧！",Toast.LENGTH_SHORT).show();
             finish();
         });
         // builder.setNeutralButton("取消", null);

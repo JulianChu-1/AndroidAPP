@@ -36,14 +36,12 @@ public class HistoryActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         loadDataFromDatabase();
-
-
     }
 
 
     private void loadDataFromDatabase() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {"Message", "_TYPE", "_DATETIME"};
+        String[] projection = {"Message", "_TYPE", "_DATETIME","BOT_NAME"};
         String selection = "API_KEY = ?";
         String[] selectionArgs = {SettingActivity.m_value}; // Replace currentAPIKey with the actual API_KEY value
 
@@ -61,10 +59,19 @@ public class HistoryActivity extends AppCompatActivity {
         while (cursor.moveToNext()) {
             int messageIndex = cursor.getColumnIndex("Message");
             int typeIndex = cursor.getColumnIndex("_TYPE");
+            int nameIndex = cursor.getColumnIndex("BOT_NAME");
             if (messageIndex != -1 && typeIndex != -1) {
                 String message = cursor.getString(messageIndex);
                 String type = cursor.getString(typeIndex);
-                dataList.add(type + ": " + message);
+                String name = cursor.getString(nameIndex);
+                if(type.equals("ME")){
+                    dataList.add(type + ": " + message);
+                } else if (type.equals("BOT")) {
+                    dataList.add(name + ": " + message);
+                }
+                else{
+                    dataList.add(type + ": " + message);
+                }
             } else {
                 Log.e("MyApp", "Columns 'Message' or '_TYPE' not found in result set");
             }

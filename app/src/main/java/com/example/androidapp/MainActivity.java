@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         values.put("_TYPE",type);
         values.put("_DATETIME",formatter.format(date));
         values.put("API_KEY",SettingActivity.m_value);
+        values.put("BOT_NAME",SettingActivity.m_bot_name);
         db.insert("Dialogue_TABLE", null, values);
         db.close();
     }

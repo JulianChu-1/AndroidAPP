@@ -16,7 +16,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private List<String> mDataList;
     private OnItemClickListener mListener;
     private OnItemLongClickListener mLongListener; // Define the OnItemLongClickListener interface
-    public String m_value;
     public MyAdapter(List<String> dataList, OnItemClickListener listener) {
         mDataList = dataList;
         mListener = listener;
