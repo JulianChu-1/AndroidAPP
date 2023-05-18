@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +37,7 @@ public class SettingActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
     private RecyclerView recyclerView;
     private List<String> dataList = new ArrayList<>();
+    private List<String> dataList2 = new ArrayList<>();
     private PopupWindow popupWindow;
     private MyAdapter adapter_1;
     public static String m_value;
@@ -55,14 +57,14 @@ public class SettingActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
         loadDataFromDatabase();
         initRecyclerView();
-        initEditText(editKey);
+        initEditText(editKey,editKey2);
 
         Button btnSubmit = findViewById(R.id.btn_submit);
         btnSubmit.setOnClickListener(v -> {
             String value = editKey.getText().toString();
             String bot_name = editKey2.getText().toString();
 
-            saveDataToDatabase(value);
+            saveDataToDatabase(value,bot_name);
             m_value = value;
             m_signal = true;
             m_bot_name = bot_name;
@@ -74,6 +76,15 @@ public class SettingActivity extends AppCompatActivity {
             editKey2.setText("");
 
             AlertShow();//提示框
+        });
+
+        ConstraintLayout constraintLayout = findViewById(R.id.backgroundView);
+        constraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editKey.clearFocus();
+                editKey2.clearFocus();
+            }
         });
     }
 
@@ -93,26 +104,28 @@ public class SettingActivity extends AppCompatActivity {
     private void initRecyclerView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        RecyclerView.Adapter adapter = new MyAdapter(dataList, item -> editKey.setText(item));
-        recyclerView.setAdapter(adapter);
 
-        adapter_1 = new MyAdapter(dataList, item -> {
+        adapter_1 = new MyAdapter(dataList,item -> {
             editKey.setText(item);
+            editKey2.setText(getBotNameFromDatabase(item));
             dismissPopupWindow();
         });
     }
 
     private void loadDataFromDatabase() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {"API_KEY"};
+        String[] projection = {"API_KEY","BOT_NAME"};
         Cursor cursor = db.query("API_TABLE", projection, null, null, null, null, "ROWID DESC", "5");
 
         dataList.clear();
         while (cursor.moveToNext()) {
             int columnIndex = cursor.getColumnIndex("API_KEY");
-            if (columnIndex != -1) {
+            int columnIndex2 = cursor.getColumnIndex("BOT_NAME");
+            if (columnIndex != -1&&columnIndex2 != -1) {
                 String value = cursor.getString(columnIndex);
+                String bot_name = cursor.getString(columnIndex2);
                 dataList.add(value);
+                dataList2.add(bot_name);
             } else {
                 Log.e("MyApp", "Column 'API_KEY' not found in result set");
             }
@@ -121,15 +134,16 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     // 存入数据到数据库
-    private void saveDataToDatabase(String value) {
+    private void saveDataToDatabase(String value,String bot_name) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("API_KEY", value);
+        values.put("BOT_NAME",bot_name);
         db.insertWithOnConflict("API_TABLE", null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
     
-    private void initEditText(EditText e) {
+    private void initEditText(EditText e,EditText e2) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String query = "SELECT COUNT(*) FROM API_TABLE";
         Cursor cursor_1 = db.rawQuery(query, null);
@@ -137,19 +151,23 @@ public class SettingActivity extends AppCompatActivity {
         int count = cursor_1.getInt(0);
         cursor_1.close();
         if (count > 0) {
-            String[] projection = {"API_KEY"};
+            String[] projection = {"API_KEY","BOT_NAME"};
             Cursor cursor = db.query("API_TABLE", projection, null, null, null, null, "ROWID DESC", "1");
             cursor.moveToLast();
             int columnIndex = cursor.getColumnIndex("API_KEY");
-            if (columnIndex != -1) {
+            int columnIndex2 = cursor.getColumnIndex("BOT_NAME");
+            if (columnIndex != -1&&columnIndex2 != -1) {
                 String value = cursor.getString(columnIndex);
+                String bot_name = cursor.getString(columnIndex2);
                 e.setText(value);
+                e2.setText(bot_name);
             } else {
                 Log.e("MyApp", "Column 'API_KEY' not found the last key");
             }
             cursor.close();
         } else {
-            e.setText("");
+            // e.setText("");
+            e2.setText("");
         }
 
         e.setFocusable(true);
@@ -192,4 +210,22 @@ public class SettingActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    public String getBotNameFromDatabase(String apiKey) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String botName = null;
+
+        String[] projection = {"BOT_NAME"};
+        String selection = "API_KEY = ?";
+        String[] selectionArgs = {apiKey};
+
+        Cursor cursor = db.query("API_TABLE", projection, selection, selectionArgs, null, null, null);
+        if (cursor.moveToFirst()) {
+            botName = cursor.getString(cursor.getColumnIndexOrThrow("BOT_NAME"));
+        }
+
+        cursor.close();
+        db.close();
+
+        return botName;
+    }
 }

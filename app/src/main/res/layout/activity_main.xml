@@ -38,6 +38,8 @@
             android:padding="16dp"
             android:layout_toLeftOf="@id/send_btn"
             android:background="@drawable/rounded_corner"
+
+            style="@style/MyTheme"
             />
         <ImageButton
             tools:ignore="SpeakableTextPresentCheck"

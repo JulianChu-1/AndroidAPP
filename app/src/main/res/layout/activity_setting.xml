@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingActivity">
+    tools:context=".SettingActivity"
+    android:id="@+id/backgroundView">
 
     <LinearLayout
         android:id="@+id/form_layout"
@@ -26,7 +27,8 @@
             android:layout_margin="10dp"
             android:minHeight="48dp"
             android:padding="10dp"
-            android:hint="Enter Key:"/>
+            android:hint="Enter Key:"
+            android:text="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"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"

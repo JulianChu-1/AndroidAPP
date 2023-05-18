@@ -15,7 +15,6 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private List<String> mDataList;
     private OnItemClickListener mListener;
-    private OnItemLongClickListener mLongListener; // Define the OnItemLongClickListener interface
     public MyAdapter(List<String> dataList, OnItemClickListener listener) {
         mDataList = dataList;
         mListener = listener;
@@ -61,16 +60,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public interface OnItemClickListener {
         void onItemClick(String item);
     }
-    public interface OnItemLongClickListener {
-        void onItemLongClick(String item);
 
-        void onItemLongClick(View view, int position);
-    }
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        mListener = listener;
-    }
-    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
-        mLongListener = listener;
-    }
+
 
 }
